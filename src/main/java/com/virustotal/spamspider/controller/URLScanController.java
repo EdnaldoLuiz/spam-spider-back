@@ -1,31 +1,40 @@
 package com.virustotal.spamspider.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.virustotal.spamspider.service.URLScanService;
 import com.virustotal.spamspider.utils.URLValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 @RestController
+@RequestMapping("/api")
 public class URLScanController {
 
     @Autowired
-    private URLScanService analysis;
+    private URLScanService urlScanService;
 
-  @PostMapping("/scan")
-    public ResponseEntity scan(@RequestBody String url) throws Exception {
+    @Autowired
+    private URLValidator urlValidator;
 
-        if(!URLValidator.isURLValid(url)) {
-            return ResponseEntity.badRequest().build();
-        } 
+    @PostMapping("/scan")
+    public ResponseEntity<String> scanUrl(@RequestParam String url) {
+        try {
+            if (!urlValidator.isURLValid(url)) {
+                return ResponseEntity.badRequest().body("Invalid URL");
+            }
 
-        var result = analysis.analyzeUrl(url);
-        analysis.printLastAnalysisStats(result);
+            String response = urlScanService.analyzeUrl(url);
 
-        return ResponseEntity.ok().build();
+            urlScanService.printLastAnalysisStats(response);
+
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error processing request: " + e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            return ResponseEntity.status(500).body("Error processing request: " + e.getMessage());
+        }
     }
-
 }

@@ -19,6 +19,9 @@ public class URLScanService {
     private String API_KEY;
 
     public String analyzeUrl(String targetUrl) throws IOException, NoSuchAlgorithmException {
+        if (!isURLValid(targetUrl)) {
+            throw new IllegalArgumentException("Invalid URL: " + targetUrl);
+        }
 
         String urlId = base64UrlEncode(targetUrl);
         String apiUrl = "https://www.virustotal.com/api/v3/urls/" + urlId;
@@ -50,14 +53,12 @@ public class URLScanService {
     }
 
     public String base64UrlEncode(String targetUrl) {
-
         byte[] bytes = targetUrl.getBytes(StandardCharsets.UTF_8);
         String base64 = java.util.Base64.getUrlEncoder().encodeToString(bytes);
         return base64.replace("=", "");
     }
 
     public void printLastAnalysisStats(String response) {
-
         JSONObject jsonResponse = new JSONObject(response);
 
         JSONObject attributes = jsonResponse.getJSONObject("data").getJSONObject("attributes");
@@ -69,5 +70,14 @@ public class URLScanService {
         System.out.println("Suspicious: " + lastAnalysisStats.getInt("suspicious"));
         System.out.println("Undetected: " + lastAnalysisStats.getInt("undetected"));
         System.out.println("Timeout: " + lastAnalysisStats.getInt("timeout"));
+    }
+
+    private boolean isURLValid(String targetUrl) {
+        try {
+            new URL(targetUrl).toURI();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
