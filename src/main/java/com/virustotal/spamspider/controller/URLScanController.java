@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -16,13 +17,12 @@ public class URLScanController {
     @Autowired
     private URLScanService urlScanService;
 
-    @Autowired
-    private URLValidator urlValidator;
-
     @PostMapping("/scan")
-    public ResponseEntity<String> scanUrl(@RequestParam String url) {
+    public ResponseEntity<String> scanUrl(@RequestBody Map<String, String> requestBody) {
         try {
-            if (!urlValidator.isURLValid(url)) {
+            String url = requestBody.get("url");
+
+            if (!URLValidator.isURLValid(url)) {
                 return ResponseEntity.badRequest().body("Invalid URL");
             }
 
@@ -37,4 +37,5 @@ public class URLScanController {
             return ResponseEntity.status(500).body("Error processing request: " + e.getMessage());
         }
     }
+
 }
