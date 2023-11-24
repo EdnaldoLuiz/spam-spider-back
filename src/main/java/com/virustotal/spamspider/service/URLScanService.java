@@ -8,6 +8,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 
+import com.virustotal.spamspider.result.LastAnalysisResult;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -58,18 +59,22 @@ public class URLScanService {
         return base64.replace("=", "");
     }
 
-    public void printLastAnalysisStats(String response) {
+    public String getLastAnalysisStats(String response) {
         JSONObject jsonResponse = new JSONObject(response);
 
         JSONObject attributes = jsonResponse.getJSONObject("data").getJSONObject("attributes");
         JSONObject lastAnalysisStats = attributes.getJSONObject("last_analysis_stats");
 
-        System.out.println("Last Analysis Stats:");
-        System.out.println("Harmless: " + lastAnalysisStats.getInt("harmless"));
-        System.out.println("Malicious: " + lastAnalysisStats.getInt("malicious"));
-        System.out.println("Suspicious: " + lastAnalysisStats.getInt("suspicious"));
-        System.out.println("Undetected: " + lastAnalysisStats.getInt("undetected"));
-        System.out.println("Timeout: " + lastAnalysisStats.getInt("timeout"));
+        LastAnalysisResult result = new LastAnalysisResult();
+        result.setTitle(attributes.getString("title"));
+        result.setLastAnalysisStats(lastAnalysisStats);
+
+        // Use uma biblioteca de serialização JSON, como Jackson, para converter o objeto em JSON
+        // Neste exemplo, estou usando a classe JSONObject do JSON-java para simplificar
+
+        JSONObject jsonResult = new JSONObject(result);
+
+        return jsonResult.toString();
     }
 
     private boolean isURLValid(String targetUrl) {

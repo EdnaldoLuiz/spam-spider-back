@@ -22,13 +22,11 @@ public class URLScanController {
         try {
             String url = requestBody.get("url");
 
-            if (!URLValidator.isURLValid(url)) {
+            if (URLValidator.isURLValid(url)) {
                 return ResponseEntity.badRequest().body("Invalid URL");
             }
 
             String response = urlScanService.analyzeUrl(url);
-
-            urlScanService.printLastAnalysisStats(response);
 
             return ResponseEntity.ok(response);
         } catch (IOException e) {
