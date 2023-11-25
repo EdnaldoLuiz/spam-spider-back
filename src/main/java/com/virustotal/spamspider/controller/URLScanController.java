@@ -1,5 +1,6 @@
 package com.virustotal.spamspider.controller;
 
+import com.virustotal.spamspider.model.URLScanModel;
 import com.virustotal.spamspider.service.URLScanService;
 import com.virustotal.spamspider.utils.URLValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,23 +19,22 @@ public class URLScanController {
     private URLScanService urlScanService;
 
     @PostMapping("/scan")
-    public ResponseEntity<String> scanUrl(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<URLScanModel> scanUrl(@RequestBody Map<String, String> requestBody) {
         try {
             String url = requestBody.get("url");
 
             if (!URLValidator.isURLValid(url)) {
-                return ResponseEntity.badRequest().body("Invalid URL");
+                return ResponseEntity.badRequest().body(null);
             }
 
             String response = urlScanService.analyzeUrl(url);
+            URLScanModel lastAnalysisStats = urlScanService.getLastAnalysisStats(response);
 
-            urlScanService.printLastAnalysisStats(response);
-
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(lastAnalysisStats);
         } catch (IOException e) {
-            return ResponseEntity.status(500).body("Error processing request: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
         } catch (NoSuchAlgorithmException e) {
-            return ResponseEntity.status(500).body("Error processing request: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
         }
     }
 

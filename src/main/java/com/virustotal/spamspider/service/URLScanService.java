@@ -12,6 +12,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.virustotal.spamspider.model.URLScanModel;
+
 @Service
 public class URLScanService {
 
@@ -19,9 +21,6 @@ public class URLScanService {
     private String API_KEY;
 
     public String analyzeUrl(String targetUrl) throws IOException, NoSuchAlgorithmException {
-        if (!isURLValid(targetUrl)) {
-            throw new IllegalArgumentException("Invalid URL: " + targetUrl);
-        }
 
         String urlId = base64UrlEncode(targetUrl);
         String apiUrl = "https://www.virustotal.com/api/v3/urls/" + urlId;
@@ -58,26 +57,18 @@ public class URLScanService {
         return base64.replace("=", "");
     }
 
-    public void printLastAnalysisStats(String response) {
+    public URLScanModel getLastAnalysisStats(String response) {
         JSONObject jsonResponse = new JSONObject(response);
-
+    
         JSONObject attributes = jsonResponse.getJSONObject("data").getJSONObject("attributes");
         JSONObject lastAnalysisStats = attributes.getJSONObject("last_analysis_stats");
-
-        System.out.println("Last Analysis Stats:");
-        System.out.println("Harmless: " + lastAnalysisStats.getInt("harmless"));
-        System.out.println("Malicious: " + lastAnalysisStats.getInt("malicious"));
-        System.out.println("Suspicious: " + lastAnalysisStats.getInt("suspicious"));
-        System.out.println("Undetected: " + lastAnalysisStats.getInt("undetected"));
-        System.out.println("Timeout: " + lastAnalysisStats.getInt("timeout"));
-    }
-
-    private boolean isURLValid(String targetUrl) {
-        try {
-            new URL(targetUrl).toURI();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+    
+        return new URLScanModel(
+                lastAnalysisStats.getInt("harmless"),
+                lastAnalysisStats.getInt("malicious"),
+                lastAnalysisStats.getInt("suspicious"),
+                lastAnalysisStats.getInt("undetected"),
+                lastAnalysisStats.getInt("timeout")
+        );
+    }    
 }

@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class URLScanModel {
     
-    private Long id;
-    private String harmless;
-    private String malicious;
-    private String suspicious;
-    private String undetected;
-    private String timeout;
+    private int harmless;
+    private int malicious;
+    private int suspicious;
+    private int undetected;
+    private int timeout;
 }
