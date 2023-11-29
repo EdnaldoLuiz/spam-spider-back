@@ -9,6 +9,10 @@ Verifique URLs para detectar a possibilidade de existência de algum malware e o
 - [Instalação](##instalação)
 - [Licença](##licença)
 
+## Partes
+
+- [Front-end](https://github.com/brunohnsouza/spam-spider-front)
+
 ## Objetivo
 
 - Projeto da faculdade com o objetivo de realizar a criação de um sistema verificador de URLs para conceitos de Machine Learning
