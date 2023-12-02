@@ -5,7 +5,7 @@
 
 Verifique URLs para detectar a possibilidade de existência de algum malware e outras brechas.
   
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/EdnaldoLuiz/spam-spider-back/blob/default/LICENSE)
 [![License: MIT](https://img.shields.io/badge/API-VirusTotal_v3-green.svg)](https://docs.virustotal.com/reference/overview)
 
 </div>
@@ -67,13 +67,13 @@ cd spam-spider-back
             <td>Spring Boot</td>
             <td>Java</td>
             <td>VSCode</td>
-	          <td>Postman</td>
+	    <td>Postman</td>
         </tr>
         <tr>
             <td>🔖 3.1.5</td>
             <td>🔖 17</td>
             <td>🔖 1.83</td>
-	          <td>🔖 10.19</td>
+	    <td>🔖 10.19</td>
         </tr>
     </tbody>
 </table>
